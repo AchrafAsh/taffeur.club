@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { Item, Context } from "../App";
+import { Item, dispatchContext } from "../App";
 
 const ToDoItem: React.FC<Item> = ({
   id,
@@ -10,7 +10,8 @@ const ToDoItem: React.FC<Item> = ({
   completed,
   time,
 }) => {
-  const dispatch = useContext(Context);
+  const dispatch = useContext(dispatchContext);
+
   return (
     <StyledItem>
       <div id="item">

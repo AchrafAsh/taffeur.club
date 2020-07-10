@@ -1,43 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import illustration from "../people-illustration.png";
 import NavBar from "./NavBar";
+import { dispatchContext } from "../App";
 
 const OnBoarding: React.FC = () => {
   const [username, setUsername] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useContext(dispatchContext);
 
-  //   useEffect(() => {
-  //     const raw = localStorage.getItem("taffeur-user");
-  //     if (raw) {
-  //       setUsername(raw);
-  //     }
-  //   }, []);
+  useEffect(() => {
+    const raw = localStorage.getItem("taffeur-user");
+    if (raw) {
+      setUsername(raw);
+      setIsLoggedIn(true);
+    }
+    console.log("test");
+  }, []);
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.currentTarget.value);
-    // localStorage.setItem("taffeur-user", e.currentTarget.value);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    localStorage.setItem("taffeur-user", username);
+    dispatch({
+      type: "signup",
+      username: username,
+    });
+    setIsLoggedIn(true);
   };
 
-  if (username) {
-    return <Redirect to="/" />;
-  }
-
-  return (
+  return isLoggedIn ? (
+    <Redirect to="/" />
+  ) : (
     <Container>
       <NavBar />
       <img src={illustration} />
-      <div className="input">
+      <form onSubmit={handleSubmit} className="input">
         <input
           type="text"
-          placeholder="Ton petit nom"
+          placeholder="C'est quoi ton petit nom?"
           value={username}
-          onChange={handleUsernameChange}
+          onChange={(e) => setUsername(e.currentTarget.value)}
         />
         <div className="next">
-          <Link to="/">Commencer</Link>
+          <input type="submit" value="Commencer" />
         </div>
-      </div>
+      </form>
     </Container>
   );
 };

@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Action } from "../App";
+import { Action } from "../appReducer";
 import Button from "./Button";
+import { dispatchContext } from "../App";
 
-const NewItem: React.FC<{ dispatch: React.Dispatch<Action> }> = ({
-  dispatch,
-}) => {
+const NewItem: React.FC = () => {
   const [emoji, setEmoji] = useState("💼");
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
   const [time, setTime] = useState("00:00");
   const [toggle, setToggle] = useState(false);
   const [emojiToggle, setEmojiToggle] = useState(false);
+
+  const dispatch = React.useContext(dispatchContext);
 
   const handleNewItemSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

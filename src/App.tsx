@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useReducer, createContext } from "react";
+import React, { useEffect, useReducer } from "react";
 import styled from "styled-components";
 import { Switch, Route, Redirect } from "react-router-dom";
-
 import "./index.css";
 
+import appReducer from "./appReducer";
 import NavBar from "./components/NavBar";
 import OnBoarding from "./components/OnBoarding";
 import ItemList from "./components/ItemList";
@@ -18,108 +18,56 @@ export interface Item {
   time?: string;
 }
 
-export type Action =
-  | {
-      type: "add";
-      emoji: string;
-      text: string;
-      description?: string;
-      time?: string;
-    }
-  | { type: "remove"; id: string }
-  | { type: "completed"; id: string }
-  | {
-      type: "edit";
-      id: string;
-      emoji: string;
-      text: string;
-      description: string;
-      time: string;
-    }
-  | { type: "reset"; state: Item[] };
-
-function appReducer(state: Item[], action: Action) {
-  switch (action.type) {
-    case "add": {
-      return [
-        ...state,
-        {
-          id: Date.now().toString(),
-          emoji: action.emoji,
-          text: action.text,
-          description: action.description,
-          completed: false,
-          time: action.time,
-        },
-      ];
-    }
-    case "remove": {
-      return state.filter((item) => item.id !== action.id);
-    }
-    case "completed": {
-      return state.map((item) =>
-        item.id === action.id ? { ...item, completed: !item.completed } : item
-      );
-    }
-    case "edit": {
-      return state;
-    }
-    case "reset": {
-      return action.state;
-    }
-    default: {
-      return state;
-    }
-  }
-}
-
-export const Context = createContext<any>({});
+export const dispatchContext = React.createContext<any>(null);
+export const stateContext = React.createContext<any>(null);
 
 function App() {
-  const [state, dispatch] = useReducer(appReducer, []);
-  const [username, setUsername] = useState("");
+  const [state, dispatch] = useReducer(appReducer, { username: "", items: [] });
 
   useEffect(() => {
-    const username = localStorage.getItem("taffeur-user");
-    if (username) {
-      setUsername(username);
-    }
-    const raw = localStorage.getItem("taffeur-list");
-    if (raw) {
-      dispatch({ type: "reset", state: JSON.parse(raw) });
+    const rawList = localStorage.getItem("taffeur-list");
+    const rawUser = localStorage.getItem("taffeur-user");
+    if (rawList && rawUser) {
+      dispatch({
+        type: "reset",
+        state: { username: rawUser, items: JSON.parse(rawList) },
+      });
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("taffeur-list", JSON.stringify(state));
+    localStorage.setItem("taffeur-list", JSON.stringify(state.items));
   }, [state]);
 
   const date = Date().split(" ");
 
   return (
-    <Context.Provider value={dispatch}>
-      <Switch>
-        <Route path="/join">
-          <OnBoarding />
-        </Route>
-        <Route path="/">
-          username ? (
-          <AppContainer>
-            <NavBar />
-            <header>
-              <h1>Menu du jour</h1>
-              <h2>
-                {date[0]} {date[2]}
-              </h2>
-            </header>
-            <ItemList items={state} />
-            <NewItem dispatch={dispatch} />
-          </AppContainer>
-          ): (
-          <Redirect to="/join" />)
-        </Route>
-      </Switch>
-    </Context.Provider>
+    <dispatchContext.Provider value={dispatch}>
+      <stateContext.Provider value={state}>
+        <Switch>
+          <Route exact path="/join">
+            <OnBoarding />
+          </Route>
+          <Route exact path="/">
+            {state.username ? (
+              <AppContainer>
+                <NavBar />
+                <header>
+                  <h1>Menu du jour</h1>
+                  <h2>
+                    {date[0]} {date[2]}
+                  </h2>
+                </header>
+                <ItemList />
+                <NewItem />
+              </AppContainer>
+            ) : (
+              <Redirect to="/join" />
+            )}
+          </Route>
+        </Switch>
+      </stateContext.Provider>
+    </dispatchContext.Provider>
   );
 }
 
