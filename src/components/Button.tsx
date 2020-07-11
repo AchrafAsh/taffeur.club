@@ -6,12 +6,7 @@ const Button: React.FC<{ clickHandler: () => void; toggle: boolean }> = ({
   toggle,
 }) => (
   <>
-    <Container />
-    <StyledButton
-      onClick={clickHandler}
-      style={{ background: "none", border: "none", outline: "0" }}
-      toggle={toggle}
-    >
+    <StyledButton onClick={clickHandler} toggle={toggle}>
       <svg
         preserveAspectRatio="xMidYMid meet"
         height="50"
@@ -44,23 +39,11 @@ const Button: React.FC<{ clickHandler: () => void; toggle: boolean }> = ({
   </>
 );
 
-const Container = styled.div`
-  position: fixed;
-  z-index: 8;
-  bottom: 0;
-  height: 20%;
-  width: 100%;
-  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-`;
-
-const StyledButton = styled.button`
-  padding: 8px;
-  left: 50vw;
-  position: fixed;
-  z-index: 10;
-  transform: translate(-50%, 50%);
-  bottom: ${(props: { toggle: boolean }) => (props.toggle ? "60%" : "10%")};
-  transition: bottom 0.5s;
+const StyledButton = styled.div`
+  z-index: 1;
+  cursor: pointer;
+  transform: ${(props: { toggle: boolean }) =>
+    props.toggle ? "translateY(50%)" : "translateY(-50%)"};
 `;
 
 export default Button;

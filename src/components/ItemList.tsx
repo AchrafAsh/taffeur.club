@@ -8,7 +8,6 @@ import { stateContext } from "../App";
 const ItemList: React.FC = () => {
   const state = React.useContext(stateContext);
   const { items } = state;
-  console.log(state);
 
   return (
     <ListContainer>
@@ -29,7 +28,7 @@ const ItemList: React.FC = () => {
 
 const ListContainer = styled.div`
   height: 100%;
-  padding: 24px 0;
+  padding: 24px 8px 40px 12px;
 `;
 
 export default ItemList;

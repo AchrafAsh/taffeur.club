@@ -16,7 +16,6 @@ const OnBoarding: React.FC = () => {
       setUsername(raw);
       setIsLoggedIn(true);
     }
-    console.log("test");
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

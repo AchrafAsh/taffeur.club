@@ -39,7 +39,8 @@ const NavContainer = styled.nav`
     flex-direction: row;
     align-items: center;
     h3 {
-      padding: 0 8px;
+      font-size: 0.8em;
+      padding: 0 16px;
     }
   }
 `;

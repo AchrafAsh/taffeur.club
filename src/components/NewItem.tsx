@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Action } from "../appReducer";
 import Button from "./Button";
 import { dispatchContext } from "../App";
 
-const NewItem: React.FC = () => {
+interface NewItemProps {
+  toggle: boolean;
+  setToggle: (state: boolean) => void;
+}
+
+const NewItem: React.FC<NewItemProps> = ({ toggle, setToggle }) => {
   const [emoji, setEmoji] = useState("💼");
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
   const [time, setTime] = useState("00:00");
-  const [toggle, setToggle] = useState(false);
   const [emojiToggle, setEmojiToggle] = useState(false);
 
   const dispatch = React.useContext(dispatchContext);
@@ -32,7 +35,6 @@ const NewItem: React.FC = () => {
 
   return (
     <StyledForm toggle={toggle} emojiToggle={emojiToggle}>
-      <div className="back-blur" />
       <div className="content">
         <form onSubmit={handleNewItemSubmit}>
           <span id="emoji" role="img" onClick={() => setEmojiToggle(true)}>
@@ -73,7 +75,7 @@ const NewItem: React.FC = () => {
               />
             </div>
             <div id="description">
-              <span role="img">🖊</span>
+              <span role="img">✏️</span>
               <textarea
                 id="description"
                 placeholder="Ajouter une note"
@@ -85,26 +87,11 @@ const NewItem: React.FC = () => {
           <input id="submit" type="submit" value="Ajouter" />
         </form>
       </div>
-      <Button toggle={toggle} clickHandler={() => setToggle(!toggle)} />
     </StyledForm>
   );
 };
 
 const StyledForm = styled.div`
-  .back-blur {
-    display: ${(props: { toggle: boolean; emojiToggle: boolean }) =>
-      props.toggle ? "block" : "none"};
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgb(220, 220, 220, 0.3);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    transform: backdrop-filter 1s, -webkit-backdrop-filter 1s;
-  }
   .emoji-back-blur {
     display: ${(props: { toggle: boolean; emojiToggle: boolean }) =>
       props.emojiToggle ? "block" : "none"};
@@ -121,13 +108,9 @@ const StyledForm = styled.div`
   }
   .content {
     width: 100%;
-    height: 60vh;
+    height: 70vh;
     background-color: white;
     border-radius: 40px 40px 0 0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 8;
     display: ${(props: { toggle: boolean }) =>
       props.toggle ? "flex" : "none"};
     flex-direction: column;
@@ -153,11 +136,11 @@ const StyledForm = styled.div`
     width: 48px;
     height: 48px;
   }
-  #emoji {
+  span#emoji {
     cursor: pointer;
-    padding: 8px;
+    padding: 10px;
     background-color: var(--smoke);
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 16px;
   }
   .emoji-panel {
@@ -176,7 +159,7 @@ const StyledForm = styled.div`
     background-color: var(--yellow);
   }
   span {
-    padding: 8px;
+    padding: 10px;
     background-color: white;
     border-radius: 8px;
     cursor: pointer;
@@ -195,8 +178,8 @@ const StyledForm = styled.div`
     width: 100%;
   }
   div#description {
-    padding: 8px;
-    border-radius: 16px;
+    padding: 14px;
+    border-radius: 22px;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -206,7 +189,7 @@ const StyledForm = styled.div`
   div#description span {
     padding: 8px;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 10px;
   }
   textarea#description {
     margin-left: 8px;
@@ -221,8 +204,8 @@ const StyledForm = styled.div`
   }
   div#time {
     background-color: var(--yellow);
-    padding: 8px;
-    border-radius: 16px;
+    padding: 14px;
+    border-radius: 22px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -233,7 +216,7 @@ const StyledForm = styled.div`
   div#time span {
     padding: 8px;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-right: 8px;
   }
   input#time {

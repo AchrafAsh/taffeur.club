@@ -6,8 +6,8 @@ const ProfilePicture: React.FC = () => {
     <div>
       <svg
         preserveAspectRatio="xMidYMid meet"
-        height="50"
-        width="50"
+        height="40"
+        width="40"
         viewBox="0 0 100 100"
       >
         <defs>

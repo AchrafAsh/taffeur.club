@@ -32,7 +32,6 @@ function appReducer(state: State, action: Action): State {
       return {
         ...state,
         items: [
-          ...state.items,
           {
             id: Date.now().toString(),
             emoji: action.emoji,
@@ -41,6 +40,7 @@ function appReducer(state: State, action: Action): State {
             completed: false,
             time: action.time,
           },
+          ...state.items,
         ],
       };
     }
