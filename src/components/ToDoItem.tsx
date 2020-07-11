@@ -14,6 +14,8 @@ const ToDoItem: React.FC<Item> = ({
 }) => {
   const x = useMotionValue(0);
   const dispatch = useContext(dispatchContext);
+  const [edit, setEdit] = React.useState(false);
+  const [newText, setNewText] = React.useState(text);
 
   React.useEffect(
     () =>
@@ -24,6 +26,19 @@ const ToDoItem: React.FC<Item> = ({
       }),
     []
   );
+
+  React.useEffect(() => {
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      setEdit(true);
+    });
+  }, []);
+
+  const editTextHandler = (e: React.FormEvent): void => {
+    e.preventDefault();
+    dispatch({ type: "editItem", id: id, text: newText });
+    setEdit(false);
+  };
 
   return (
     <StyledItem>
@@ -44,9 +59,17 @@ const ToDoItem: React.FC<Item> = ({
         <span id="emoji" role="img">
           {emoji}
         </span>
-        <label id="text" htmlFor={id}>
-          {text}
-        </label>
+        {edit ? (
+          <form onSubmit={editTextHandler}>
+            <input
+              id="text"
+              value={newText}
+              onChange={(e) => setNewText(e.currentTarget.value)}
+            />
+          </form>
+        ) : (
+          <label id="text">{text}</label>
+        )}
         <small id="description">{description}</small>
         <small id="time">{time}</small>
       </motion.div>
@@ -92,7 +115,10 @@ const StyledItem = styled.div`
     padding: 16px;
     border-radius: 22px;
   }
-  label#text {
+  label#text,
+  input#text {
+    background: none;
+    font-size: 1em;
     place-self: center start;
     grid-column: 2;
     grid-row: 1;

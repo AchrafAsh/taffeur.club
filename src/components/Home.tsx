@@ -1,17 +1,32 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
-
+import { motion } from "framer-motion";
 import NavBar from "./NavBar";
 import ItemList from "./ItemList";
 import BottomNav from "./BottomNav";
 import { stateContext } from "../App";
 
+const variants = {
+  in: { opacity: 1 },
+  out: { opacity: 0 },
+};
+
+const pageTransition = {
+  transition: "linear",
+};
+
 const Home: React.FC = () => {
   const { username } = React.useContext(stateContext);
   const date = Date().split(" ");
   return (
-    <div>
+    <motion.div
+      variants={variants}
+      exit="out"
+      initial="out"
+      animate="in"
+      transition={pageTransition}
+    >
       {username ? (
         <AppContainer>
           <NavBar />
@@ -27,7 +42,7 @@ const Home: React.FC = () => {
       ) : (
         <Redirect to="/join" />
       )}
-    </div>
+    </motion.div>
   );
 };
 

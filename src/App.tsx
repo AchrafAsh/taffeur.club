@@ -1,12 +1,13 @@
 import React, { useEffect, useReducer } from "react";
 import styled from "styled-components";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import "./index.css";
 
 import appReducer from "./appReducer";
-import NavBar from "./components/NavBar";
 import OnBoarding from "./components/OnBoarding";
 import Home from "./components/Home";
+import Welcome from "./components/Welcome";
 
 export interface Item {
   id: string;
@@ -22,6 +23,7 @@ export const stateContext = React.createContext<any>(null);
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, { username: "", items: [] });
+  const location = useLocation();
 
   useEffect(() => {
     const rawList = localStorage.getItem("taffeur-list");
@@ -41,10 +43,13 @@ function App() {
   return (
     <dispatchContext.Provider value={dispatch}>
       <stateContext.Provider value={state}>
-        <Switch>
-          <Route exact path="/join" component={OnBoarding} />
-          <Route exact path="/" component={Home} />
-        </Switch>
+        <AnimatePresence exitBeforeEnter>
+          <Switch location={location}>
+            <Route exact path="/join" component={OnBoarding} />
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/" component={Welcome} />
+          </Switch>
+        </AnimatePresence>
       </stateContext.Provider>
     </dispatchContext.Provider>
   );

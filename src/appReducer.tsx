@@ -11,12 +11,16 @@ export type Action =
   | { type: "remove"; id: string }
   | { type: "completed"; id: string }
   | {
-      type: "edit";
+      type: "editName";
+      username: string;
+    }
+  | {
+      type: "editItem";
       id: string;
-      emoji: string;
-      text: string;
-      description: string;
-      time: string;
+      emoji?: string;
+      text?: string;
+      description?: string;
+      time?: string;
     }
   | { type: "signup"; username: string }
   | { type: "reset"; state: { items: Item[]; username: string } };
@@ -58,12 +62,22 @@ function appReducer(state: State, action: Action): State {
         ),
       };
     }
-    case "edit": {
+    case "editName": {
       return {
         ...state,
-        items: state.items.map((item) =>
-          item.id === action.id ? { ...item, ...action } : item
-        ),
+        username: action.username,
+      };
+    }
+    case "editItem": {
+      return {
+        ...state,
+        items: state.items.map((item) => {
+          if (item.id === action.id) {
+            return { ...item, ...action };
+          } else {
+            return item;
+          }
+        }),
       };
     }
     case "reset": {

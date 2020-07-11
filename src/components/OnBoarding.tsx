@@ -1,9 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
+import { motion } from "framer-motion";
 import illustration from "../people-illustration.png";
 import NavBar from "./NavBar";
 import { dispatchContext } from "../App";
+
+const variants = {
+  in: { x: 0, opacity: 1 },
+  out: { x: 0, opacity: 0 },
+  exit: { x: "-100vw", opacity: 1 },
+};
+const pageTransition = {
+  transition: "linear",
+};
 
 const OnBoarding: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -31,21 +41,29 @@ const OnBoarding: React.FC = () => {
   return isLoggedIn ? (
     <Redirect to="/" />
   ) : (
-    <Container>
-      <NavBar />
-      <img src={illustration} />
-      <form onSubmit={handleSubmit} className="input">
-        <input
-          type="text"
-          placeholder="C'est quoi ton petit nom?"
-          value={username}
-          onChange={(e) => setUsername(e.currentTarget.value)}
-        />
-        <div className="next">
-          <input type="submit" value="Commencer" />
-        </div>
-      </form>
-    </Container>
+    <motion.div
+      variants={variants}
+      exit="exit"
+      initial="out"
+      animate="in"
+      transition={pageTransition}
+    >
+      <Container>
+        <NavBar />
+        <img src={illustration} />
+        <form onSubmit={handleSubmit} className="input">
+          <input
+            type="text"
+            placeholder="C'est quoi ton petit nom?"
+            value={username}
+            onChange={(e) => setUsername(e.currentTarget.value)}
+          />
+          <div className="next">
+            <input type="submit" value="Commencer" />
+          </div>
+        </form>
+      </Container>
+    </motion.div>
   );
 };
 

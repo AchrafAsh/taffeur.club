@@ -2,20 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-const pathVariants = {
-  initial: {
-    opacity: 0,
-    pathLength: 1,
-  },
-  animate: {
-    opacity: 1,
-    pathLength: [0, 1],
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
-
 const Checkbox: React.FC<{
   completed: boolean;
   clickHandler: () => void;
