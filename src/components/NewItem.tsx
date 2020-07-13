@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Button from "./Button";
+import { motion } from "framer-motion";
+
 import { dispatchContext } from "../App";
+import { Pin } from "./Checkbox";
 
 interface NewItemProps {
   toggle: boolean;
@@ -12,8 +14,9 @@ const NewItem: React.FC<NewItemProps> = ({ toggle, setToggle }) => {
   const [emoji, setEmoji] = useState("💼");
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
-  const [time, setTime] = useState("00:00");
+  const [time, setTime] = useState("");
   const [emojiToggle, setEmojiToggle] = useState(false);
+  const [pinned, setPinned] = useState(false);
 
   const dispatch = React.useContext(dispatchContext);
 
@@ -25,34 +28,59 @@ const NewItem: React.FC<NewItemProps> = ({ toggle, setToggle }) => {
       text: text,
       description: description,
       time: time,
+      pinned: pinned,
     });
     setText("");
     setDescription("");
     setToggle(false);
   };
 
-  const emojiList = ["💼", "⏰", "🏋", "🧘", "📝", "👨‍💻", "🍣", "📞", "🍜"];
+  const emojiList = [
+    "💼",
+    "⏰",
+    "🏋",
+    "🧘",
+    "📝",
+    "👨‍💻",
+    "🍣",
+    "📞",
+    "🍜",
+    "👵",
+    "🛒",
+    "🎉",
+  ];
 
   return (
-    <StyledForm toggle={toggle} emojiToggle={emojiToggle}>
-      <div className="content">
+    <StyledForm>
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        className="content"
+      >
         <form onSubmit={handleNewItemSubmit}>
           <span id="emoji" role="img" onClick={() => setEmojiToggle(true)}>
             {emoji}
           </span>
-          <div className="emoji-back-blur" />
-          <div className="emoji-panel">
-            {emojiList.map((emoji: string) => {
-              const clickHandler = () => {
-                setEmoji(emoji);
-                setEmojiToggle(false);
-              };
-              return (
-                <span role="img" onClick={clickHandler} key={emoji}>
-                  {emoji}
-                </span>
-              );
-            })}
+          {emojiToggle && (
+            <div className="emoji-back-blur">
+              <div className="emoji-panel">
+                {emojiList.map((emoji: string) => {
+                  const clickHandler = () => {
+                    setEmoji(emoji);
+                    setEmojiToggle(false);
+                  };
+                  return (
+                    <span role="img" onClick={clickHandler} key={emoji}>
+                      {emoji}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div id="pin" onClick={() => setPinned(!pinned)}>
+            <Pin pinned={pinned} />
           </div>
           <div id="text">
             <input
@@ -86,15 +114,13 @@ const NewItem: React.FC<NewItemProps> = ({ toggle, setToggle }) => {
           </div>
           <input id="submit" type="submit" value="Ajouter" />
         </form>
-      </div>
+      </motion.div>
     </StyledForm>
   );
 };
 
 const StyledForm = styled.div`
   .emoji-back-blur {
-    display: ${(props: { toggle: boolean; emojiToggle: boolean }) =>
-      props.emojiToggle ? "block" : "none"};
     position: fixed;
     top: 0;
     left: 0;
@@ -102,29 +128,40 @@ const StyledForm = styled.div`
     width: 100vw;
     height: 100vh;
     background-color: rgb(220, 220, 220, 0.3);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    transform: backdrop-filter 1s, -webkit-backdrop-filter 1s;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: backdrop-filter 1s, -webkit-backdrop-filter 1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  .emoji-panel {
+    background-color: var(--yellow);
+    list-style-type: none;
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    span {
+      margin: 4px;
+    }
   }
   .content {
-    width: 100%;
-    height: 70vh;
+    width: 100vw;
     background-color: white;
     border-radius: 40px 40px 0 0;
-    display: ${(props: { toggle: boolean }) =>
-      props.toggle ? "flex" : "none"};
+    display: "flex";
     flex-direction: column;
     justify-content: center;
-    transform: ${(props: { toggle: boolean }) =>
-      props.toggle ? "translateY(0)" : "translateY(100%)"};
-    transition: transform 0.5s;
   }
   form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 40px 24px 16px 24px;
+    justify-content: center;
+    padding: 56px 24px;
     width: 100%;
     height: 100%;
   }
@@ -138,25 +175,11 @@ const StyledForm = styled.div`
   }
   span#emoji {
     cursor: pointer;
-    padding: 10px;
+    padding: 12px;
     background-color: var(--smoke);
     border-radius: 10px;
-    margin-bottom: 16px;
-  }
-  .emoji-panel {
-    display: ${(props: { toggle: boolean; emojiToggle: boolean }) =>
-      props.emojiToggle ? "grid" : "none"};
-    position: fixed;
-    top: 0;
-    left: 50%;
-    z-index: 1200;
-    transform: translate(-50%, -50%);
-    list-style-type: none;
-    padding: 24px;
-    border-radius: 16px;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    background-color: var(--yellow);
+    margin: 16px 0;
+    font-size: 1.2em;
   }
   span {
     padding: 10px;
@@ -174,7 +197,7 @@ const StyledForm = styled.div`
   div#text {
     padding: 8px;
     border-radius: 16px;
-    margin-bottom: 16px;
+    margin: 16px 0;
     width: 100%;
   }
   div#description {
@@ -228,6 +251,7 @@ const StyledForm = styled.div`
   }
   input#submit {
     width: 80%;
+    margin-top: 30px;
     text-align: center;
     padding: 12px;
     background-color: var(--yellow);

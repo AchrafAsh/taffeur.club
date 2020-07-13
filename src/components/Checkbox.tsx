@@ -46,15 +46,39 @@ const StyledCheckbox = styled.div`
   path {
     stroke-linejoin: round;
     stroke-linecap: round;
-    stroke: grey;
+    stroke: black;
     stroke-width: 2;
   }
   .check {
     height: 2px;
     width: 6px;
     border-radius: 2px;
-    background-color: grey;
+    background-color: black;
   }
+`;
+
+export const Pin: React.FC<{ pinned: boolean }> = ({ pinned }) => {
+  return (
+    <StyledPin
+      pinned={pinned}
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox="0 0 24 24"
+    >
+      <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+    </StyledPin>
+  );
+};
+
+const StyledPin = styled.svg`
+  -ms-transform: rotate(360deg);
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  stroke: black;
+  fill: ${(props: { pinned: boolean }) => (props.pinned ? "black" : "white")};
+  transition: fill 0.5s linear;
 `;
 
 export default Checkbox;

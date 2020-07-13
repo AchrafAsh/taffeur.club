@@ -20,6 +20,7 @@ const ItemList: React.FC = () => {
           description={item.description}
           completed={item.completed}
           time={item.time}
+          pinned={item.pinned}
         />
       ))}
     </ListContainer>

@@ -40,10 +40,9 @@ const Button: React.FC<{ clickHandler: () => void; toggle: boolean }> = ({
 );
 
 const StyledButton = styled.div`
-  z-index: 1;
-  cursor: pointer;
   transform: ${(props: { toggle: boolean }) =>
-    props.toggle ? "translateY(50%)" : "translateY(-50%)"};
+    props.toggle ? "translateY(50%)" : "translateY(-100%)"};
+  cursor: pointer;
 `;
 
 export default Button;

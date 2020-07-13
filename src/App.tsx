@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import "./index.css";
 
 import appReducer from "./appReducer";
-import OnBoarding from "./components/OnBoarding";
-import Home from "./components/Home";
-import Welcome from "./components/Welcome";
+const OnBoarding = React.lazy(() => import("./components/OnBoarding"));
+const Home = React.lazy(() => import("./components/Home"));
+const Welcome = React.lazy(() => import("./components/Welcome"));
 
 export interface Item {
   id: string;
@@ -16,6 +16,7 @@ export interface Item {
   description?: string;
   completed: boolean;
   time?: string;
+  pinned: boolean;
 }
 
 export const dispatchContext = React.createContext<any>(null);

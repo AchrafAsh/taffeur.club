@@ -7,6 +7,7 @@ export type Action =
       text: string;
       description?: string;
       time?: string;
+      pinned: boolean;
     }
   | { type: "remove"; id: string }
   | { type: "completed"; id: string }
@@ -21,7 +22,9 @@ export type Action =
       text?: string;
       description?: string;
       time?: string;
+      pinned?: boolean;
     }
+  | { type: "pin"; pinned: boolean; id: string }
   | { type: "signup"; username: string }
   | { type: "reset"; state: { items: Item[]; username: string } };
 
@@ -43,6 +46,7 @@ function appReducer(state: State, action: Action): State {
             description: action.description,
             completed: false,
             time: action.time,
+            pinned: action.pinned,
           },
           ...state.items,
         ],
@@ -59,6 +63,14 @@ function appReducer(state: State, action: Action): State {
         ...state,
         items: state.items.map((item) =>
           item.id === action.id ? { ...item, completed: !item.completed } : item
+        ),
+      };
+    }
+    case "pin": {
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.id === action.id ? { ...item, pinned: action.pinned } : item
         ),
       };
     }
